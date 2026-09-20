@@ -54,4 +54,71 @@ The combination with the lowest total value is selected as the optimized warehou
 
 ### Objective
 
-The optimization m
+The optimization minimizes:
+
+Total Weighted Delivery Distance = Σ (Distance × Daily Orders)
+
+This gives higher-demand neighborhoods greater importance during optimization.
+
+📐 Distance Calculation
+
+GridPoint uses the Haversine formula to calculate the approximate great-circle distance between two geographic coordinates.
+
+Distance is represented in kilometers.
+
+🛠️ Technology Stack
+Python
+Streamlit
+Pandas
+Python math module
+Python itertools module
+▶️ How to Run
+1. Clone the repository
+git clone <repository-url>
+2. Navigate to the project folder
+cd <project-folder>
+3. Install dependencies
+pip install streamlit pandas
+4. Run the application
+streamlit run app.py
+
+The application will open in your browser.
+
+📊 Example Result
+
+Using a sample set of five Bengaluru neighborhoods and two warehouses, GridPoint produced:
+
+Current weighted delivery distance: 3634.40 order-km
+Optimized weighted delivery distance: 1659.21 order-km
+Reduction: 1975.19 order-km
+Percentage reduction: 54.35%
+
+These values demonstrate the result for the sample input used during testing and are not intended as a general performance claim.
+
+🔮 Future Improvements
+
+Possible extensions include:
+
+Warehouse capacity constraints
+Maximum service radius
+Vehicle types and delivery costs
+Fuel cost estimation
+Traffic-aware travel times
+Dynamic demand changes
+Larger datasets and more scalable optimization algorithms
+Allowing warehouse candidates at locations other than existing neighborhoods
+🤖 AI Assistance Disclosure
+
+AI assistants were used during development for code assistance, debugging, explanation of programming concepts, and UI guidance.
+
+The team was responsible for the project's problem understanding, algorithm selection, integration, testing, and final implementation decisions.
+
+👥 Team
+
+Hack-a-Matics 2026 — GridPoint
+
+Built for the VECTOR theme.
+
+📄 Project Status
+
+GridPoint is a working prototype demonstrating demand-aware warehouse location optimization and delivery-distance comparison.
