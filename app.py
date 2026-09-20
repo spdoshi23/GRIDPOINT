@@ -1,5 +1,7 @@
+
 import streamlit as st
 import pandas as pd
+import pydeck as pdk
 from math import radians, sin, cos, sqrt, atan2
 from itertools import combinations
 
@@ -20,61 +22,61 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-    .main-title {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 0;
-    }
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0;
+}
 
-    .subtitle {
-        font-size: 1.15rem;
-        color: #6b7280;
-        margin-bottom: 1.5rem;
-    }
+.subtitle {
+    font-size: 1.15rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
 
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
 
-    .metric-card {
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        background-color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        text-align: center;
-    }
+.metric-card {
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    text-align: center;
+}
 
-    .metric-label {
-        font-size: 0.9rem;
-        color: #6b7280;
-        margin-bottom: 0.4rem;
-    }
+.metric-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+}
 
-    .metric-value {
-        font-size: 1.7rem;
-        font-weight: 750;
-    }
+.metric-value {
+    font-size: 1.7rem;
+    font-weight: 750;
+}
 
-    .result-box {
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #dbeafe;
-        background-color: #eff6ff;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
+.result-box {
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid #dbeafe;
+    background-color: #eff6ff;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 
-    .warehouse-box {
-        padding: 0.9rem 1rem;
-        border-radius: 10px;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 0.6rem;
-        background-color: #fafafa;
-    }
+.warehouse-box {
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 0.6rem;
+    background-color: #fafafa;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -116,31 +118,180 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 
 demo_neighborhoods = [
 
-    {"name": "Koramangala", "latitude": 12.9352, "longitude": 77.6245, "orders": 120},
-    {"name": "Indiranagar", "latitude": 12.9784, "longitude": 77.6408, "orders": 95},
-    {"name": "Whitefield", "latitude": 12.9698, "longitude": 77.7500, "orders": 150},
-    {"name": "Yeshwanthpur", "latitude": 13.0285, "longitude": 77.5548, "orders": 70},
-    {"name": "Jayanagar", "latitude": 12.9250, "longitude": 77.5938, "orders": 100},
-    {"name": "HSR Layout", "latitude": 12.9138, "longitude": 77.6649, "orders": 110},
-    {"name": "Mahadevapura", "latitude": 12.9904, "longitude": 77.6842, "orders": 140},
-    {"name": "Malleswaram", "latitude": 13.0081, "longitude": 77.5648, "orders": 75},
-    {"name": "Marathahalli", "latitude": 12.9591, "longitude": 77.6974, "orders": 135},
-    {"name": "Electronic City", "latitude": 12.8452, "longitude": 77.6602, "orders": 160},
-    {"name": "Banashankari", "latitude": 12.9255, "longitude": 77.5468, "orders": 85},
-    {"name": "Rajajinagar", "latitude": 12.9910, "longitude": 77.5540, "orders": 90},
-    {"name": "Bellandur", "latitude": 12.9304, "longitude": 77.6784, "orders": 145},
-    {"name": "Hebbal", "latitude": 13.0358, "longitude": 77.5970, "orders": 105},
-    {"name": "BTM Layout", "latitude": 12.9166, "longitude": 77.6101, "orders": 115},
-    {"name": "JP Nagar", "latitude": 12.9063, "longitude": 77.5857, "orders": 95},
-    {"name": "Kengeri", "latitude": 12.9141, "longitude": 77.4828, "orders": 60},
-    {"name": "RT Nagar", "latitude": 13.0196, "longitude": 77.5946, "orders": 65},
-    {"name": "Cox Town", "latitude": 13.0005, "longitude": 77.6163, "orders": 55},
-    {"name": "Domlur", "latitude": 12.9609, "longitude": 77.6387, "orders": 80},
-    {"name": "Ulsoor", "latitude": 12.9817, "longitude": 77.6198, "orders": 70},
-    {"name": "Vijayanagar", "latitude": 12.9719, "longitude": 77.5299, "orders": 85},
-    {"name": "Nagarbhavi", "latitude": 12.9591, "longitude": 77.5122, "orders": 65},
-    {"name": "KR Puram", "latitude": 13.0072, "longitude": 77.6954, "orders": 125},
-    {"name": "Yelahanka", "latitude": 13.1007, "longitude": 77.5963, "orders": 90}
+    {
+        "name": "Koramangala",
+        "latitude": 12.9352,
+        "longitude": 77.6245,
+        "orders": 120
+    },
+
+    {
+        "name": "Indiranagar",
+        "latitude": 12.9784,
+        "longitude": 77.6408,
+        "orders": 95
+    },
+
+    {
+        "name": "Whitefield",
+        "latitude": 12.9698,
+        "longitude": 77.7500,
+        "orders": 150
+    },
+
+    {
+        "name": "Yeshwanthpur",
+        "latitude": 13.0285,
+        "longitude": 77.5548,
+        "orders": 70
+    },
+
+    {
+        "name": "Jayanagar",
+        "latitude": 12.9250,
+        "longitude": 77.5938,
+        "orders": 100
+    },
+
+    {
+        "name": "HSR Layout",
+        "latitude": 12.9138,
+        "longitude": 77.6649,
+        "orders": 110
+    },
+
+    {
+        "name": "Mahadevapura",
+        "latitude": 12.9904,
+        "longitude": 77.6842,
+        "orders": 140
+    },
+
+    {
+        "name": "Malleswaram",
+        "latitude": 13.0081,
+        "longitude": 77.5648,
+        "orders": 75
+    },
+
+    {
+        "name": "Marathahalli",
+        "latitude": 12.9591,
+        "longitude": 77.6974,
+        "orders": 135
+    },
+
+    {
+        "name": "Electronic City",
+        "latitude": 12.8452,
+        "longitude": 77.6602,
+        "orders": 160
+    },
+
+    {
+        "name": "Banashankari",
+        "latitude": 12.9255,
+        "longitude": 77.5468,
+        "orders": 85
+    },
+
+    {
+        "name": "Rajajinagar",
+        "latitude": 12.9910,
+        "longitude": 77.5540,
+        "orders": 90
+    },
+
+    {
+        "name": "Bellandur",
+        "latitude": 12.9304,
+        "longitude": 77.6784,
+        "orders": 145
+    },
+
+    {
+        "name": "Hebbal",
+        "latitude": 13.0358,
+        "longitude": 77.5970,
+        "orders": 105
+    },
+
+    {
+        "name": "BTM Layout",
+        "latitude": 12.9166,
+        "longitude": 77.6101,
+        "orders": 115
+    },
+
+    {
+        "name": "JP Nagar",
+        "latitude": 12.9063,
+        "longitude": 77.5857,
+        "orders": 95
+    },
+
+    {
+        "name": "Kengeri",
+        "latitude": 12.9141,
+        "longitude": 77.4828,
+        "orders": 60
+    },
+
+    {
+        "name": "RT Nagar",
+        "latitude": 13.0196,
+        "longitude": 77.5946,
+        "orders": 65
+    },
+
+    {
+        "name": "Cox Town",
+        "latitude": 13.0005,
+        "longitude": 77.6163,
+        "orders": 55
+    },
+
+    {
+        "name": "Domlur",
+        "latitude": 12.9609,
+        "longitude": 77.6387,
+        "orders": 80
+    },
+
+    {
+        "name": "Ulsoor",
+        "latitude": 12.9817,
+        "longitude": 77.6198,
+        "orders": 70
+    },
+
+    {
+        "name": "Vijayanagar",
+        "latitude": 12.9719,
+        "longitude": 77.5299,
+        "orders": 85
+    },
+
+    {
+        "name": "Nagarbhavi",
+        "latitude": 12.9591,
+        "longitude": 77.5122,
+        "orders": 65
+    },
+
+    {
+        "name": "KR Puram",
+        "latitude": 13.0072,
+        "longitude": 77.6954,
+        "orders": 125
+    },
+
+    {
+        "name": "Yelahanka",
+        "latitude": 13.1007,
+        "longitude": 77.5963,
+        "orders": 90
+    }
 ]
 
 demo_warehouses = [
@@ -196,6 +347,13 @@ with st.sidebar:
 
     st.header("⚙️ Configuration")
 
+    theme = st.radio(
+        "🎨 Appearance",
+        ["Light Mode", "Dark Mode"]
+    )
+
+    st.divider()
+
     mode = st.radio(
         "Data Mode",
         ["Demo Mode", "Manual Mode"]
@@ -219,6 +377,60 @@ with st.sidebar:
         st.write(
             "Enter your own neighborhood and warehouse data."
         )
+
+# ---------------------------------------------------------
+# THEME
+# ---------------------------------------------------------
+
+if theme == "Dark Mode":
+
+    st.markdown("""
+    <style>
+
+    .stApp {
+        background-color: #0e1117;
+        color: #f5f5f5;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #161b22;
+    }
+
+    .metric-card {
+        background-color: #161b22;
+        border-color: #30363d;
+    }
+
+    .warehouse-box {
+        background-color: #161b22;
+        border-color: #30363d;
+    }
+
+    .subtitle,
+    .metric-label {
+        color: #9ca3af;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
+else:
+
+    st.markdown("""
+    <style>
+
+    .stApp {
+        background-color: #ffffff;
+        color: #111827;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #f8fafc;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
 # DATA
@@ -478,6 +690,7 @@ else:
                     longitude
                 )
             )
+
 
 # ---------------------------------------------------------
 # OPTIMIZE BUTTON
@@ -805,45 +1018,263 @@ if optimize:
         )
 
         # -------------------------------------------------
-        # MAP
+        # INTERACTIVE MAP
         # -------------------------------------------------
 
         st.markdown(
             '<div class="section-title">'
-            '🗺️ Optimized Network Map'
+            '🗺️ Optimized Delivery Network'
             '</div>',
             unsafe_allow_html=True
         )
 
-        map_data = pd.DataFrame(
-            [
+        st.write(
+            "Neighborhood color represents daily order demand. "
+            "Larger circles indicate higher demand."
+        )
+
+        # ---------------------------------------------
+        # NEIGHBORHOOD MAP DATA
+        # ---------------------------------------------
+
+        map_points = []
+
+        for neighborhood in neighborhoods:
+
+            orders = neighborhood["orders"]
+
+            if orders >= 120:
+
+                color = [220, 38, 38]
+                demand = "High"
+
+            elif orders >= 80:
+
+                color = [234, 179, 8]
+                demand = "Moderate"
+
+            else:
+
+                color = [107, 114, 128]
+                demand = "Low"
+
+            radius = 400 + (orders * 4)
+
+            map_points.append(
                 {
                     "latitude":
                         neighborhood["latitude"],
 
                     "longitude":
-                        neighborhood["longitude"]
-                }
+                        neighborhood["longitude"],
 
-                for neighborhood in neighborhoods
-            ]
-            +
-            [
+                    "name":
+                        neighborhood["name"],
+
+                    "orders":
+                        orders,
+
+                    "demand":
+                        demand,
+
+                    "color":
+                        color,
+
+                    "radius":
+                        radius
+                }
+            )
+
+        neighborhood_df = pd.DataFrame(
+            map_points
+        )
+
+        # ---------------------------------------------
+        # WAREHOUSE MAP DATA
+        # ---------------------------------------------
+
+        warehouse_points = []
+
+        for warehouse in best_combination:
+
+            warehouse_points.append(
                 {
                     "latitude":
                         warehouse["latitude"],
 
                     "longitude":
-                        warehouse["longitude"]
-                }
+                        warehouse["longitude"],
 
-                for warehouse in best_combination
-            ]
+                    "name":
+                        warehouse["name"],
+
+                    "orders":
+                        0,
+
+                    "demand":
+                        "Optimized Warehouse",
+
+                    "color":
+                        [34, 197, 94],
+
+                    "radius":
+                        900
+                }
+            )
+
+        warehouse_df = pd.DataFrame(
+            warehouse_points
         )
 
-        st.map(
-            map_data,
+        # ---------------------------------------------
+        # NEIGHBORHOOD LAYER
+        # ---------------------------------------------
+
+        neighborhood_layer = pdk.Layer(
+            "ScatterplotLayer",
+
+            data=neighborhood_df,
+
+            get_position=[
+                "longitude",
+                "latitude"
+            ],
+
+            get_fill_color="color",
+
+            get_radius="radius",
+
+            pickable=True,
+
+            opacity=0.8,
+
+            stroked=True,
+
+            get_line_color=[
+                255,
+                255,
+                255
+            ],
+
+            line_width_min_pixels=1
+        )
+
+        # ---------------------------------------------
+        # WAREHOUSE LAYER
+        # ---------------------------------------------
+
+        warehouse_layer = pdk.Layer(
+            "ScatterplotLayer",
+
+            data=warehouse_df,
+
+            get_position=[
+                "longitude",
+                "latitude"
+            ],
+
+            get_fill_color=[
+                34,
+                197,
+                94
+            ],
+
+            get_radius=900,
+
+            pickable=True,
+
+            opacity=1,
+
+            stroked=True,
+
+            get_line_color=[
+                255,
+                255,
+                255
+            ],
+
+            line_width_min_pixels=3
+        )
+
+        # ---------------------------------------------
+        # MAP STYLE
+        # ---------------------------------------------
+
+        if theme == "Dark Mode":
+
+            map_style = (
+                "https://basemaps.cartocdn.com/"
+                "gl/dark-matter-gl-style/"
+                "gl-style.json"
+            )
+
+        else:
+
+            map_style = (
+                "https://basemaps.cartocdn.com/"
+                "gl/positron-gl-style/"
+                "gl-style.json"
+            )
+
+        # ---------------------------------------------
+        # VIEW
+        # ---------------------------------------------
+
+        view_state = pdk.ViewState(
+            latitude=12.9716,
+            longitude=77.5946,
+            zoom=10.5,
+            pitch=0
+        )
+
+        # ---------------------------------------------
+        # MAP
+        # ---------------------------------------------
+
+        neighborhood_map = pdk.Deck(
+
+            layers=[
+                neighborhood_layer,
+                warehouse_layer
+            ],
+
+            initial_view_state=view_state,
+
+            map_style=map_style,
+
+            tooltip={
+                "html":
+                    "<b>{name}</b><br/>"
+                    "Daily Orders: {orders}<br/>"
+                    "Demand: {demand}",
+
+                "style": {
+                    "backgroundColor": "#111827",
+                    "color": "white"
+                }
+            },
+
+            height=550
+        )
+
+        st.pydeck_chart(
+            neighborhood_map,
             use_container_width=True
+        )
+
+        # ---------------------------------------------
+        # LEGEND
+        # ---------------------------------------------
+
+        st.markdown(
+            """
+            **Demand Legend**
+
+            🔴 **High demand** — 120+ orders/day &nbsp;&nbsp;
+            🟡 **Moderate demand** — 80–119 orders/day &nbsp;&nbsp;
+            ⚪ **Low demand** — below 80 orders/day &nbsp;&nbsp;
+            🟢 **Optimized warehouse**
+            """
         )
 
         # -------------------------------------------------
@@ -856,4 +1287,5 @@ if optimize:
             "warehouse combinations and minimizes total "
             "order-weighted Haversine delivery distance."
         )
+
 
