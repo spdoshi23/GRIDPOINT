@@ -10,7 +10,7 @@ from itertools import combinations
 # =========================================================
 
 st.set_page_config(
-    page_title="GridPoint",
+    page_title="OptiGrid",
     page_icon="📍",
     layout="wide"
 )
@@ -74,7 +74,7 @@ st.markdown("""
 # SIDEBAR
 # =========================================================
 
-st.sidebar.title("⚙️ GridPoint")
+st.sidebar.title("⚙️ OptiGrid")
 
 theme = st.sidebar.radio(
     "🎨 Appearance",
