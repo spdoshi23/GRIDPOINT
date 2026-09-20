@@ -1,91 +1,10 @@
-```python
 import streamlit as st
 import pandas as pd
 from math import radians, sin, cos, sqrt, atan2
 from itertools import combinations
 
-# ---------------------------------------------------------
-# PAGE CONFIG
-# ---------------------------------------------------------
-
-st.set_page_config(
-    page_title="GridPoint",
-    page_icon="📍",
-    layout="wide"
-)
-
-# ---------------------------------------------------------
-# CUSTOM CSS
-# ---------------------------------------------------------
-
-st.markdown("""
-<style>
-
-    .main-title {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 0;
-    }
-
-    .subtitle {
-        font-size: 1.15rem;
-        color: #6b7280;
-        margin-bottom: 1.5rem;
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .metric-card {
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        background-color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        text-align: center;
-    }
-
-    .metric-label {
-        font-size: 0.9rem;
-        color: #6b7280;
-        margin-bottom: 0.4rem;
-    }
-
-    .metric-value {
-        font-size: 1.7rem;
-        font-weight: 750;
-    }
-
-    .result-box {
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #dbeafe;
-        background-color: #eff6ff;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .warehouse-box {
-        padding: 0.9rem 1rem;
-        border-radius: 10px;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 0.6rem;
-        background-color: #fafafa;
-    }
-
-</style>
-""", unsafe_allow_html=True)
-
-# ---------------------------------------------------------
-# DISTANCE FUNCTION
-# ---------------------------------------------------------
 
 def calculate_distance(lat1, lon1, lat2, lon2):
-
     R = 6371
 
     lat1 = radians(lat1)
@@ -98,25 +17,37 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 
     a = (
         sin(dlat / 2) ** 2
-        + cos(lat1)
-        * cos(lat2)
-        * sin(dlon / 2) ** 2
+        + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
     )
 
-    c = 2 * atan2(
-        sqrt(a),
-        sqrt(1 - a)
-    )
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     return R * c
 
+
+st.title("📍 GRIDPOINT")
+st.subheader("Warehouse Location Optimization Platform")
+
+st.write(
+    "GridPoint uses neighborhood demand and geographic locations "
+    "to identify warehouse locations that minimize order-weighted "
+    "delivery distance."
+)
+
+# ---------------------------------------------------------
+# DEMO / MANUAL MODE
+# ---------------------------------------------------------
+
+mode = st.selectbox(
+    "Choose Mode",
+    ["Demo Mode", "Manual Mode"]
+)
 
 # ---------------------------------------------------------
 # DEMO DATA
 # ---------------------------------------------------------
 
 demo_neighborhoods = [
-
     {"name": "Koramangala", "latitude": 12.9352, "longitude": 77.6245, "orders": 120},
     {"name": "Indiranagar", "latitude": 12.9784, "longitude": 77.6408, "orders": 95},
     {"name": "Whitefield", "latitude": 12.9698, "longitude": 77.7500, "orders": 150},
@@ -145,19 +76,16 @@ demo_neighborhoods = [
 ]
 
 demo_warehouses = [
-
     {
         "name": "Yeshwanthpur Warehouse",
         "latitude": 13.0285,
         "longitude": 77.5548
     },
-
     {
         "name": "Whitefield Warehouse",
         "latitude": 12.9698,
         "longitude": 77.7500
     },
-
     {
         "name": "Electronic City Warehouse",
         "latitude": 12.8452,
@@ -166,79 +94,17 @@ demo_warehouses = [
 ]
 
 # ---------------------------------------------------------
-# HEADER
-# ---------------------------------------------------------
-
-st.markdown(
-    '<div class="main-title">📍 GRIDPOINT</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="subtitle">'
-    'Warehouse Location Optimization Platform'
-    '</div>',
-    unsafe_allow_html=True
-)
-
-st.write(
-    "Optimize warehouse placement using geographic location "
-    "and neighborhood demand to minimize order-weighted "
-    "delivery distance."
-)
-
-st.divider()
-
-# ---------------------------------------------------------
-# SIDEBAR
-# ---------------------------------------------------------
-
-with st.sidebar:
-
-    st.header("⚙️ Configuration")
-
-    mode = st.radio(
-        "Data Mode",
-        ["Demo Mode", "Manual Mode"]
-    )
-
-    st.divider()
-
-    if mode == "Demo Mode":
-
-        st.success(
-            "25 neighborhoods loaded"
-        )
-
-        st.info(
-            "3 warehouse locations are available "
-            "for optimization."
-        )
-
-    else:
-
-        st.write(
-            "Enter your own neighborhood and warehouse data."
-        )
-
-# ---------------------------------------------------------
-# DATA
+# DEMO MODE
 # ---------------------------------------------------------
 
 if mode == "Demo Mode":
 
     neighborhoods = demo_neighborhoods
-
     locations = [
-        warehouse["name"]
-        for warehouse in demo_warehouses
+        warehouse["name"] for warehouse in demo_warehouses
     ]
-
     coordinates = [
-        (
-            warehouse["latitude"],
-            warehouse["longitude"]
-        )
+        (warehouse["latitude"], warehouse["longitude"])
         for warehouse in demo_warehouses
     ]
 
@@ -246,82 +112,12 @@ if mode == "Demo Mode":
     num_warehouses = len(demo_warehouses)
 
     st.success(
-        "Demo dataset loaded — Bengaluru delivery network"
+        "Demo dataset loaded: 25 Bengaluru neighborhoods and 3 warehouses."
     )
 
-    # -----------------------------------------------------
-    # SUMMARY
-    # -----------------------------------------------------
+    st.header("Neighborhood Data")
 
-    total_orders = sum(
-        neighborhood["orders"]
-        for neighborhood in neighborhoods
-    )
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-label">
-                    Neighborhoods
-                </div>
-                <div class="metric-value">
-                    {num_neighborhoods}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col2:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-label">
-                    Warehouses
-                </div>
-                <div class="metric-value">
-                    {num_warehouses}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col3:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-label">
-                    Daily Orders
-                </div>
-                <div class="metric-value">
-                    {total_orders:,}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    # -----------------------------------------------------
-    # NEIGHBORHOOD DATA
-    # -----------------------------------------------------
-
-    st.markdown(
-        '<div class="section-title">'
-        '🏘️ Neighborhood Demand'
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-    neighborhood_table = pd.DataFrame(
-        neighborhoods
-    )
+    neighborhood_table = pd.DataFrame(neighborhoods)
 
     neighborhood_table.columns = [
         "Neighborhood",
@@ -330,30 +126,12 @@ if mode == "Demo Mode":
         "Daily Orders"
     ]
 
-    neighborhood_table["Latitude"] = (
-        neighborhood_table["Latitude"].round(4)
-    )
-
-    neighborhood_table["Longitude"] = (
-        neighborhood_table["Longitude"].round(4)
-    )
-
     st.dataframe(
         neighborhood_table,
-        use_container_width=True,
-        hide_index=True
+        use_container_width=True
     )
 
-    # -----------------------------------------------------
-    # WAREHOUSE DATA
-    # -----------------------------------------------------
-
-    st.markdown(
-        '<div class="section-title">'
-        '🏭 Existing Warehouse Locations'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    st.header("Warehouse Data")
 
     warehouse_table = pd.DataFrame(
         [
@@ -363,16 +141,13 @@ if mode == "Demo Mode":
                 "Latitude": warehouse["latitude"],
                 "Longitude": warehouse["longitude"]
             }
-
-            for i, warehouse
-            in enumerate(demo_warehouses)
+            for i, warehouse in enumerate(demo_warehouses)
         ]
     )
 
     st.dataframe(
         warehouse_table,
-        use_container_width=True,
-        hide_index=True
+        use_container_width=True
     )
 
 # ---------------------------------------------------------
@@ -381,11 +156,10 @@ if mode == "Demo Mode":
 
 else:
 
-    st.markdown(
-        '<div class="section-title">'
-        '🏘️ Neighborhood Data'
-        '</div>',
-        unsafe_allow_html=True
+    st.header("Neighborhood Data")
+
+    st.write(
+        "Enter the neighborhoods, their locations, and daily order demand."
     )
 
     num_neighborhoods = st.number_input(
@@ -396,48 +170,43 @@ else:
 
     neighborhoods = []
 
-    for i in range(
-        int(num_neighborhoods)
-    ):
+    for i in range(int(num_neighborhoods)):
 
-        with st.expander(
-            f"Neighborhood {i + 1}"
-        ):
+        st.subheader(f"Neighborhood {i + 1}")
 
-            neighborhood_name = st.text_input(
-                f"Name of Neighborhood {i + 1}"
-            )
+        neighborhood_name = st.text_input(
+            f"Name of Neighborhood {i + 1}"
+        )
 
-            neighborhood_latitude = st.number_input(
-                f"Latitude {i + 1}",
-                format="%.6f"
-            )
+        neighborhood_latitude = st.number_input(
+            f"Latitude of Neighborhood {i + 1}",
+            format="%.6f"
+        )
 
-            neighborhood_longitude = st.number_input(
-                f"Longitude {i + 1}",
-                format="%.6f"
-            )
+        neighborhood_longitude = st.number_input(
+            f"Longitude of Neighborhood {i + 1}",
+            format="%.6f"
+        )
 
-            daily_orders = st.number_input(
-                f"Daily Orders {i + 1}",
-                min_value=0,
-                step=1
-            )
+        daily_orders = st.number_input(
+            f"Daily Orders in Neighborhood {i + 1}",
+            min_value=0,
+            step=1
+        )
 
-            neighborhoods.append(
-                {
-                    "name": neighborhood_name,
-                    "latitude": neighborhood_latitude,
-                    "longitude": neighborhood_longitude,
-                    "orders": daily_orders
-                }
-            )
+        neighborhoods.append(
+            {
+                "name": neighborhood_name,
+                "latitude": neighborhood_latitude,
+                "longitude": neighborhood_longitude,
+                "orders": daily_orders
+            }
+        )
 
-    st.markdown(
-        '<div class="section-title">'
-        '🏭 Warehouse Configuration'
-        '</div>',
-        unsafe_allow_html=True
+    st.header("Optimization Settings")
+
+    st.write(
+        "Choose the number of warehouses GridPoint should determine."
     )
 
     num_warehouses = st.number_input(
@@ -446,53 +215,41 @@ else:
         step=1
     )
 
+    st.write("Enter the warehouse coordinates below:")
+
     locations = []
     coordinates = []
 
-    for i in range(
-        int(num_warehouses)
-    ):
+    for i in range(int(num_warehouses)):
 
-        with st.expander(
-            f"Warehouse {i + 1}"
-        ):
+        st.subheader(f"Warehouse {i + 1}")
 
-            location = st.text_input(
-                f"Location of Warehouse {i + 1}"
-            )
+        location = st.text_input(
+            f"Location of Warehouse {i + 1}"
+        )
 
-            latitude = st.number_input(
-                f"Latitude of Warehouse {i + 1}",
-                format="%.6f"
-            )
+        locations.append(location)
 
-            longitude = st.number_input(
-                f"Longitude of Warehouse {i + 1}",
-                format="%.6f"
-            )
+        latitude = st.number_input(
+            f"Latitude of Warehouse {i + 1}",
+            format="%.6f"
+        )
 
-            locations.append(location)
+        longitude = st.number_input(
+            f"Longitude of Warehouse {i + 1}",
+            format="%.6f"
+        )
 
-            coordinates.append(
-                (
-                    latitude,
-                    longitude
-                )
-            )
+        coordinates.append(
+            (latitude, longitude)
+        )
+
 
 # ---------------------------------------------------------
-# OPTIMIZE BUTTON
+# OPTIMIZATION
 # ---------------------------------------------------------
 
-st.divider()
-
-optimize = st.button(
-    "🚀 Optimize Warehouse Locations",
-    use_container_width=True,
-    type="primary"
-)
-
-if optimize:
+if st.button("🚀 Optimize Warehouses"):
 
     if mode == "Demo Mode":
 
@@ -508,17 +265,62 @@ if optimize:
             )
         )
 
-    if not valid_data:
+    if valid_data:
 
-        st.error(
-            "Please enter valid details for all warehouses."
+        st.success("Warehouse data accepted!")
+
+        # -------------------------------------------------
+        # WAREHOUSE DETAILS
+        # -------------------------------------------------
+
+        st.subheader("Warehouse Details")
+
+        data = []
+
+        for i in range(int(num_warehouses)):
+
+            data.append(
+                {
+                    "Warehouse": i + 1,
+                    "Location": locations[i],
+                    "Latitude": coordinates[i][0],
+                    "Longitude": coordinates[i][1]
+                }
+            )
+
+        st.dataframe(
+            data,
+            use_container_width=True
         )
 
-    else:
+        # -------------------------------------------------
+        # WAREHOUSE DISTANCES
+        # -------------------------------------------------
+
+        st.subheader("Distances Between Warehouses")
+
+        for i in range(len(coordinates)):
+
+            for j in range(i + 1, len(coordinates)):
+
+                distance = calculate_distance(
+                    coordinates[i][0],
+                    coordinates[i][1],
+                    coordinates[j][0],
+                    coordinates[j][1]
+                )
+
+                st.write(
+                    f"Distance between Warehouse {i + 1} "
+                    f"and Warehouse {j + 1}: "
+                    f"{distance:.2f} km"
+                )
 
         # -------------------------------------------------
         # CURRENT ASSIGNMENTS
         # -------------------------------------------------
+
+        st.subheader("Neighborhood Assignments")
 
         assignments = []
 
@@ -546,34 +348,49 @@ if optimize:
 
             assignments.append(
                 {
-                    "Neighborhood":
-                        neighborhood["name"],
-
-                    "Orders":
-                        neighborhood["orders"],
-
-                    "Assigned Warehouse":
-                        nearest_warehouse,
-
-                    "Distance (km)":
-                        nearest_distance
+                    "Neighborhood": neighborhood["name"],
+                    "Orders": neighborhood["orders"],
+                    "Assigned Warehouse": nearest_warehouse,
+                    "Distance (km)": nearest_distance
                 }
             )
+
+        st.dataframe(
+            pd.DataFrame(assignments).assign(
+                **{
+                    "Distance (km)": lambda x:
+                    x["Distance (km)"].round(2)
+                }
+            ),
+            use_container_width=True
+        )
 
         # -------------------------------------------------
         # CURRENT COST
         # -------------------------------------------------
 
-        current_cost = sum(
-            assignment["Distance (km)"]
-            * assignment["Orders"]
+        st.subheader("📦 Current Weighted Delivery Distance")
 
-            for assignment in assignments
+        total_weighted_distance = 0
+
+        for assignment in assignments:
+
+            weighted_distance = (
+                assignment["Distance (km)"]
+                * assignment["Orders"]
+            )
+
+            total_weighted_distance += weighted_distance
+
+        st.write(
+            f"{total_weighted_distance:.2f} order-km"
         )
 
         # -------------------------------------------------
         # OPTIMIZATION
         # -------------------------------------------------
+
+        st.subheader("🎯 GridPoint Optimization Result")
 
         candidate_locations = neighborhoods
 
@@ -615,148 +432,36 @@ if optimize:
                 best_combination = combination
 
         # -------------------------------------------------
-        # RESULTS HEADER
+        # RESULT
         # -------------------------------------------------
-
-        st.divider()
-
-        st.markdown(
-            '<div class="section-title">'
-            '🎯 Optimization Results'
-            '</div>',
-            unsafe_allow_html=True
-        )
 
         st.success(
-            "GridPoint successfully identified "
-            "the optimal warehouse location(s)."
+            "GridPoint found the optimal warehouse location(s)!"
         )
 
-        # -------------------------------------------------
-        # RESULT METRICS
-        # -------------------------------------------------
-
-        savings = current_cost - best_cost
-
-        if current_cost > 0:
-
-            savings_percentage = (
-                savings / current_cost
-            ) * 100
-
-        else:
-
-            savings_percentage = 0
-
-        col1, col2, col3, col4 = st.columns(4)
-
-        with col1:
-
-            st.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">
-                        Current Distance
-                    </div>
-                    <div class="metric-value">
-                        {current_cost:,.0f}
-                    </div>
-                    <div class="metric-label">
-                        order-km
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        with col2:
-
-            st.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">
-                        Optimized Distance
-                    </div>
-                    <div class="metric-value">
-                        {best_cost:,.0f}
-                    </div>
-                    <div class="metric-label">
-                        order-km
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        with col3:
-
-            st.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">
-                        Distance Reduction
-                    </div>
-                    <div class="metric-value">
-                        {savings:,.0f}
-                    </div>
-                    <div class="metric-label">
-                        order-km
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        with col4:
-
-            st.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">
-                        Percentage Reduction
-                    </div>
-                    <div class="metric-value">
-                        {savings_percentage:.1f}%
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        # -------------------------------------------------
-        # RECOMMENDED LOCATIONS
-        # -------------------------------------------------
-
-        st.markdown(
-            '<div class="section-title">'
-            '📍 Recommended Warehouse Locations'
-            '</div>',
-            unsafe_allow_html=True
+        st.write(
+            "Recommended Warehouse Location(s):"
         )
 
         for warehouse in best_combination:
 
-            st.markdown(
-                f"""
-                <div class="warehouse-box">
-                    <strong>📦 {warehouse["name"]}</strong><br>
-                    Latitude: {warehouse["latitude"]:.4f}
-                    &nbsp;&nbsp;|&nbsp;&nbsp;
-                    Longitude: {warehouse["longitude"]:.4f}
-                </div>
-                """,
-                unsafe_allow_html=True
+            st.write(
+                f"📍 {warehouse['name']} "
+                f"({warehouse['latitude']}, "
+                f"{warehouse['longitude']})"
             )
+
+        st.write(
+            f"Optimized Weighted Delivery Distance: "
+            f"{best_cost:.2f} order-km"
+        )
 
         # -------------------------------------------------
         # OPTIMIZED ASSIGNMENTS
         # -------------------------------------------------
 
-        st.markdown(
-            '<div class="section-title">'
-            '🔗 Optimized Neighborhood Assignments'
-            '</div>',
-            unsafe_allow_html=True
+        st.subheader(
+            "Optimized Neighborhood Assignments"
         )
 
         optimized_assignments = []
@@ -782,83 +487,97 @@ if optimize:
 
             optimized_assignments.append(
                 {
-                    "Neighborhood":
-                        neighborhood["name"],
-
-                    "Orders":
-                        neighborhood["orders"],
-
-                    "Assigned Warehouse":
-                        nearest_warehouse,
-
-                    "Distance (km)":
-                        round(
-                            nearest_distance,
-                            2
-                        )
+                    "Neighborhood": neighborhood["name"],
+                    "Orders": neighborhood["orders"],
+                    "Assigned Warehouse": nearest_warehouse,
+                    "Distance (km)": round(
+                        nearest_distance,
+                        2
+                    )
                 }
             )
 
         st.dataframe(
             optimized_assignments,
-            use_container_width=True,
-            hide_index=True
+            use_container_width=True
+        )
+
+        # -------------------------------------------------
+        # COST COMPARISON
+        # -------------------------------------------------
+
+        current_cost = total_weighted_distance
+        optimized_cost = best_cost
+
+        savings = current_cost - optimized_cost
+
+        if current_cost > 0:
+
+            savings_percentage = (
+                savings / current_cost
+            ) * 100
+
+        else:
+
+            savings_percentage = 0
+
+        st.subheader("💰 Delivery Cost Comparison")
+
+        st.write(
+            f"Current Weighted Delivery Distance: "
+            f"{current_cost:.2f} order-km"
+        )
+
+        st.write(
+            f"Optimized Weighted Delivery Distance: "
+            f"{optimized_cost:.2f} order-km"
+        )
+
+        st.write(
+            f"Delivery Distance Reduction: "
+            f"{savings:.2f} order-km"
+        )
+
+        st.write(
+            f"Percentage Reduction: "
+            f"{savings_percentage:.2f}%"
         )
 
         # -------------------------------------------------
         # MAP
         # -------------------------------------------------
 
-        st.markdown(
-            '<div class="section-title">'
-            '🗺️ Optimized Network Map'
-            '</div>',
-            unsafe_allow_html=True
-        )
-
         map_data = pd.DataFrame(
             [
                 {
-                    "latitude":
-                        neighborhood["latitude"],
-
-                    "longitude":
-                        neighborhood["longitude"]
+                    "latitude": neighborhood["latitude"],
+                    "longitude": neighborhood["longitude"]
                 }
-
                 for neighborhood in neighborhoods
             ]
             +
             [
                 {
-                    "latitude":
-                        warehouse["latitude"],
-
-                    "longitude":
-                        warehouse["longitude"]
+                    "latitude": warehouse["latitude"],
+                    "longitude": warehouse["longitude"]
                 }
-
                 for warehouse in best_combination
             ]
         )
 
-        st.map(
-            map_data,
-            use_container_width=True
+        st.subheader(
+            "🗺️ Optimized Warehouse & Neighborhood Map"
         )
 
-        # -------------------------------------------------
-        # EXPLANATION
-        # -------------------------------------------------
+        st.map(map_data)
 
         st.info(
-            "GridPoint uses a discrete K-Median-style "
-            "optimization approach. It evaluates candidate "
-            "warehouse combinations and minimizes total "
-            "order-weighted Haversine delivery distance."
+            "GridPoint recommends warehouse location(s) "
+            "that minimize order-weighted delivery distance."
         )
-```
 
-**Do this now:** replace `app.py` → save → run it locally → choose **Demo Mode** → click **Optimize Warehouse Locations**.
+    else:
 
-If it runs correctly, **do not make any more UI changes**. Commit + push it, and Streamlit Cloud should redeploy.
+        st.error(
+            "Please enter valid details for all warehouses."
+        )
