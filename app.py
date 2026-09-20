@@ -17,121 +17,343 @@ st.set_page_config(
 
 
 # =========================================================
-# CUSTOM CSS
+# CUSTOM THEME
 # =========================================================
-
-st.markdown("""
-<style>
-
-.main-title {
-    font-size: 42px;
-    font-weight: 800;
-    margin-bottom: 0px;
-}
-
-.subtitle {
-    font-size: 18px;
-    opacity: 0.75;
-    margin-bottom: 25px;
-}
-
-.section-title {
-    font-size: 25px;
-    font-weight: 700;
-    margin-top: 25px;
-    margin-bottom: 12px;
-}
-
-.metric-card {
-    padding: 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(128,128,128,0.25);
-    text-align: center;
-}
-
-.metric-value {
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.metric-label {
-    font-size: 14px;
-    opacity: 0.7;
-}
-
-.warehouse-card {
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid rgba(34,197,94,0.5);
-    margin-bottom: 10px;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-# =========================================================
-# SIDEBAR
-# =========================================================
-
-st.sidebar.title("⚙️ OptiGrid")
 
 theme = st.sidebar.radio(
     "🎨 Appearance",
     ["Light Mode", "Dark Mode"]
 )
 
-mode = st.sidebar.radio(
-    "📊 Data Mode",
-    ["Demo Mode", "Manual Mode"]
-)
-
-
-# =========================================================
-# THEME
-# =========================================================
 
 if theme == "Dark Mode":
+    st.markdown(
+        """
+        <style>
+        /* ---------- GLOBAL ---------- */
 
-    st.markdown("""
-    <style>
-    .stApp {
-        background-color: #0f172a;
-        color: #f8fafc;
-    }
+        .stApp {
+            background: #0b1120;
+            color: #e5e7eb;
+        }
 
-    [data-testid="stSidebar"] {
-        background-color: #111827;
-    }
+        [data-testid="stAppViewContainer"] {
+            background: #0b1120;
+        }
 
-    .metric-card {
-        background-color: #1e293b;
-    }
+        [data-testid="stHeader"] {
+            background: #0b1120;
+        }
 
-    .warehouse-card {
-        background-color: #13251a;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        [data-testid="stSidebar"] {
+            background: #111827;
+            border-right: 1px solid #1f2937;
+        }
+
+        [data-testid="stSidebar"] * {
+            color: #e5e7eb !important;
+        }
+
+        /* ---------- MAIN TEXT ---------- */
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #f8fafc !important;
+        }
+
+        p, li, label, span {
+            color: #d1d5db;
+        }
+
+        /* ---------- HEADER ---------- */
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #f8fafc !important;
+            margin-bottom: 0.2rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8 !important;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ---------- SECTION ---------- */
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #f8fafc !important;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ---------- CARDS ---------- */
+
+        .metric-card {
+            background: #111827;
+            border: 1px solid #243044;
+            border-radius: 14px;
+            padding: 1.1rem;
+            min-height: 125px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .metric-label {
+            color: #94a3b8 !important;
+            font-size: 0.9rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .metric-value {
+            color: #f8fafc !important;
+            font-size: 1.55rem;
+            font-weight: 750;
+        }
+
+        .metric-highlight {
+            color: #4ade80 !important;
+        }
+
+        /* ---------- INFO BOX ---------- */
+
+        .info-box {
+            background: #111827;
+            border: 1px solid #263449;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .info-box strong {
+            color: #f8fafc !important;
+        }
+
+        /* ---------- WAREHOUSE CARDS ---------- */
+
+        .warehouse-card {
+            background: #0f172a;
+            border: 1px solid #14532d;
+            border-left: 5px solid #22c55e;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .warehouse-title {
+            color: #86efac !important;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .warehouse-text {
+            color: #cbd5e1 !important;
+            margin-top: 0.25rem;
+        }
+
+        /* ---------- INPUTS ---------- */
+
+        div[data-baseweb="input"] {
+            background-color: #111827 !important;
+            border-color: #334155 !important;
+        }
+
+        div[data-baseweb="input"] input {
+            color: #f8fafc !important;
+            background-color: #111827 !important;
+        }
+
+        div[data-baseweb="select"] > div {
+            background-color: #111827 !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        textarea {
+            background-color: #111827 !important;
+            color: #f8fafc !important;
+        }
+
+        /* ---------- BUTTONS ---------- */
+
+        .stButton > button {
+            background: #2563eb;
+            color: white !important;
+            border: none;
+            border-radius: 9px;
+            font-weight: 650;
+            padding: 0.55rem 1.1rem;
+        }
+
+        .stButton > button:hover {
+            background: #1d4ed8;
+            color: white !important;
+        }
+
+        /* ---------- TABLES ---------- */
+
+        [data-testid="stDataFrame"] {
+            border: 1px solid #263449;
+            border-radius: 10px;
+        }
+
+        /* ---------- EXPANDERS ---------- */
+
+        [data-testid="stExpander"] {
+            background: #111827;
+            border: 1px solid #263449;
+            border-radius: 10px;
+        }
+
+        /* ---------- DIVIDERS ---------- */
+
+        hr {
+            border-color: #263449 !important;
+        }
+
+        /* ---------- ALERTS ---------- */
+
+        [data-testid="stAlert"] {
+            background: #111827;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 else:
+    st.markdown(
+        """
+        <style>
+        /* ---------- GLOBAL ---------- */
 
-    st.markdown("""
-    <style>
-    .stApp {
-        background-color: #ffffff;
-        color: #111827;
-    }
+        .stApp {
+            background: #f8fafc;
+            color: #1e293b;
+        }
 
-    .metric-card {
-        background-color: #f8fafc;
-    }
+        [data-testid="stAppViewContainer"] {
+            background: #f8fafc;
+        }
 
-    .warehouse-card {
-        background-color: #f0fdf4;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        [data-testid="stSidebar"] {
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        /* ---------- HEADER ---------- */
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #0f172a !important;
+            margin-bottom: 0.2rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b !important;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ---------- SECTION ---------- */
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a !important;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ---------- CARDS ---------- */
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.1rem;
+            min-height: 125px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .metric-label {
+            color: #64748b !important;
+            font-size: 0.9rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .metric-value {
+            color: #0f172a !important;
+            font-size: 1.55rem;
+            font-weight: 750;
+        }
+
+        .metric-highlight {
+            color: #15803d !important;
+        }
+
+        /* ---------- INFO BOX ---------- */
+
+        .info-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+
+        /* ---------- WAREHOUSE CARDS ---------- */
+
+        .warehouse-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 5px solid #16a34a;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .warehouse-title {
+            color: #166534 !important;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .warehouse-text {
+            color: #475569 !important;
+            margin-top: 0.25rem;
+        }
+
+        /* ---------- BUTTONS ---------- */
+
+        .stButton > button {
+            background: #2563eb;
+            color: white !important;
+            border: none;
+            border-radius: 9px;
+            font-weight: 650;
+            padding: 0.55rem 1.1rem;
+        }
+
+        .stButton > button:hover {
+            background: #1d4ed8;
+            color: white !important;
+        }
+
+        /* ---------- EXPANDERS ---------- */
+
+        [data-testid="stExpander"] {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # =========================================================
@@ -139,7 +361,7 @@ else:
 # =========================================================
 
 st.markdown(
-    '<div class="main-title">📍 GridPoint</div>',
+    '<div class="main-title">📍 OptiGrid</div>',
     unsafe_allow_html=True
 )
 
@@ -153,7 +375,7 @@ st.markdown(
 # DEMO DATA
 # =========================================================
 
-demo_neighborhoods = [
+demo_neighborhoods = pd.DataFrame([
     ["Koramangala", 12.9352, 77.6245, 120],
     ["Indiranagar", 12.9784, 77.6408, 95],
     ["Whitefield", 12.9698, 77.7500, 150],
@@ -179,241 +401,30 @@ demo_neighborhoods = [
     ["Nagarbhavi", 12.9591, 77.5122, 65],
     ["KR Puram", 13.0072, 77.6954, 125],
     ["Yelahanka", 13.1007, 77.5963, 90]
-]
+], columns=[
+    "Neighborhood",
+    "Latitude",
+    "Longitude",
+    "Daily Orders"
+])
 
-demo_warehouses = [
+
+demo_warehouses = pd.DataFrame([
     ["Yeshwanthpur Warehouse", 13.0285, 77.5548],
     ["Whitefield Warehouse", 12.9698, 77.7500],
     ["Electronic City Warehouse", 12.8452, 77.6602]
-]
+], columns=[
+    "Warehouse",
+    "Latitude",
+    "Longitude"
+])
 
 
 # =========================================================
-# DATA INPUT
-# =========================================================
-
-if mode == "Demo Mode":
-
-    neighborhoods = pd.DataFrame(
-        demo_neighborhoods,
-        columns=[
-            "Neighborhood",
-            "Latitude",
-            "Longitude",
-            "Daily Orders"
-        ]
-    )
-
-    warehouses = pd.DataFrame(
-        demo_warehouses,
-        columns=[
-            "Warehouse",
-            "Latitude",
-            "Longitude"
-        ]
-    )
-
-else:
-
-    st.markdown(
-        '<div class="section-title">🏘️ Neighborhood Data</div>',
-        unsafe_allow_html=True
-    )
-
-    num_neighborhoods = st.number_input(
-        "Number of neighborhoods",
-        min_value=2,
-        max_value=25,
-        value=5,
-        step=1
-    )
-
-    neighborhood_data = []
-
-    for i in range(num_neighborhoods):
-
-        with st.expander(f"Neighborhood {i + 1}"):
-
-            name = st.text_input(
-                "Neighborhood name",
-                value=f"Neighborhood {i + 1}",
-                key=f"name_{i}"
-            )
-
-            col1, col2, col3 = st.columns(3)
-
-            with col1:
-                latitude = st.number_input(
-                    "Latitude",
-                    value=12.9716,
-                    format="%.6f",
-                    key=f"lat_{i}"
-                )
-
-            with col2:
-                longitude = st.number_input(
-                    "Longitude",
-                    value=77.5946,
-                    format="%.6f",
-                    key=f"lon_{i}"
-                )
-
-            with col3:
-                orders = st.number_input(
-                    "Daily Orders",
-                    min_value=1,
-                    value=100,
-                    step=1,
-                    key=f"orders_{i}"
-                )
-
-            neighborhood_data.append(
-                [name, latitude, longitude, orders]
-            )
-
-    neighborhoods = pd.DataFrame(
-        neighborhood_data,
-        columns=[
-            "Neighborhood",
-            "Latitude",
-            "Longitude",
-            "Daily Orders"
-        ]
-    )
-
-    st.markdown(
-        '<div class="section-title">🏭 Warehouse Data</div>',
-        unsafe_allow_html=True
-    )
-
-    num_warehouses = st.number_input(
-        "Number of warehouses",
-        min_value=1,
-        max_value=5,
-        value=2,
-        step=1
-    )
-
-    warehouse_data = []
-
-    for i in range(num_warehouses):
-
-        with st.expander(f"Warehouse {i + 1}"):
-
-            name = st.text_input(
-                "Warehouse name",
-                value=f"Warehouse {i + 1}",
-                key=f"warehouse_name_{i}"
-            )
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                latitude = st.number_input(
-                    "Latitude",
-                    value=12.9716,
-                    format="%.6f",
-                    key=f"warehouse_lat_{i}"
-                )
-
-            with col2:
-                longitude = st.number_input(
-                    "Longitude",
-                    value=77.5946,
-                    format="%.6f",
-                    key=f"warehouse_lon_{i}"
-                )
-
-            warehouse_data.append(
-                [name, latitude, longitude]
-            )
-
-    warehouses = pd.DataFrame(
-        warehouse_data,
-        columns=[
-            "Warehouse",
-            "Latitude",
-            "Longitude"
-        ]
-    )
-
-
-# =========================================================
-# NETWORK OVERVIEW
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">📊 Network Overview</div>',
-    unsafe_allow_html=True
-)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-value">{len(neighborhoods)}</div>
-            <div class="metric-label">Neighborhoods</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col2:
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-value">{len(warehouses)}</div>
-            <div class="metric-label">Warehouses</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col3:
-
-    total_orders = neighborhoods["Daily Orders"].sum()
-
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-value">{total_orders:,}</div>
-            <div class="metric-label">Daily Orders</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# =========================================================
-# DATA TABLES
-# =========================================================
-
-with st.expander("🏘️ View Neighborhood Demand"):
-
-    st.dataframe(
-        neighborhoods,
-        use_container_width=True,
-        hide_index=True
-    )
-
-
-with st.expander("🏭 View Warehouse Locations"):
-
-    st.dataframe(
-        warehouses,
-        use_container_width=True,
-        hide_index=True
-    )
-
-
-# =========================================================
-# HAVERSINE
+# HAVERSINE DISTANCE
 # =========================================================
 
 def calculate_distance(lat1, lon1, lat2, lon2):
-
     R = 6371
 
     lat1 = radians(lat1)
@@ -431,103 +442,39 @@ def calculate_distance(lat1, lon1, lat2, lon2):
         * sin(dlon / 2) ** 2
     )
 
-    c = 2 * atan2(
-        sqrt(a),
-        sqrt(1 - a)
-    )
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     return R * c
 
 
 # =========================================================
-# CURRENT ASSIGNMENTS
-# =========================================================
-
-def calculate_assignments(neighborhoods, warehouses):
-
-    assignments = []
-    total_weighted_distance = 0
-
-    for _, n in neighborhoods.iterrows():
-
-        best_distance = float("inf")
-        best_warehouse = None
-
-        for _, w in warehouses.iterrows():
-
-            distance = calculate_distance(
-                n["Latitude"],
-                n["Longitude"],
-                w["Latitude"],
-                w["Longitude"]
-            )
-
-            if distance < best_distance:
-                best_distance = distance
-                best_warehouse = w["Warehouse"]
-
-        weighted_distance = (
-            best_distance * n["Daily Orders"]
-        )
-
-        total_weighted_distance += weighted_distance
-
-        assignments.append([
-            n["Neighborhood"],
-            best_warehouse,
-            best_distance,
-            n["Daily Orders"],
-            weighted_distance
-        ])
-
-    return (
-        pd.DataFrame(
-            assignments,
-            columns=[
-                "Neighborhood",
-                "Assigned Warehouse",
-                "Distance (km)",
-                "Daily Orders",
-                "Weighted Distance"
-            ]
-        ),
-        total_weighted_distance
-    )
-
-
-# =========================================================
-# FAST OPTIMIZATION
+# FAST K-MEDIAN STYLE OPTIMIZATION
 # =========================================================
 
 def optimize_warehouses(neighborhoods, number_of_warehouses):
 
-    # -----------------------------------------------------
-    # Calculate all pairwise distances ONCE
-    # -----------------------------------------------------
-
     n = len(neighborhoods)
 
+    # Precompute distance matrix
     distance_matrix = [[0.0] * n for _ in range(n)]
 
     for i in range(n):
+        for j in range(i + 1, n):
 
-        for j in range(n):
-
-            distance_matrix[i][j] = calculate_distance(
+            distance = calculate_distance(
                 neighborhoods.iloc[i]["Latitude"],
                 neighborhoods.iloc[i]["Longitude"],
                 neighborhoods.iloc[j]["Latitude"],
                 neighborhoods.iloc[j]["Longitude"]
             )
 
+            distance_matrix[i][j] = distance
+            distance_matrix[j][i] = distance
+
     demand = neighborhoods["Daily Orders"].tolist()
 
     best_combination = None
     best_cost = float("inf")
-
-    # -----------------------------------------------------
-    # Evaluate candidate warehouse combinations
-    # -----------------------------------------------------
 
     for combination in combinations(
         range(n),
@@ -539,9 +486,7 @@ def optimize_warehouses(neighborhoods, number_of_warehouses):
         for neighborhood_index in range(n):
 
             minimum_distance = min(
-                distance_matrix[
-                    neighborhood_index
-                ][warehouse_index]
+                distance_matrix[neighborhood_index][warehouse_index]
                 for warehouse_index in combination
             )
 
@@ -551,7 +496,6 @@ def optimize_warehouses(neighborhoods, number_of_warehouses):
             )
 
         if total_cost < best_cost:
-
             best_cost = total_cost
             best_combination = combination
 
@@ -559,147 +503,407 @@ def optimize_warehouses(neighborhoods, number_of_warehouses):
 
 
 # =========================================================
-# OPTIMIZATION
+# SIDEBAR
 # =========================================================
 
-st.markdown(
-    '<div class="section-title">🚀 Optimization</div>',
-    unsafe_allow_html=True
+st.sidebar.markdown("## ⚙️ OptiGrid Controls")
+
+mode = st.sidebar.radio(
+    "Data Mode",
+    ["Demo Mode", "Manual Mode"]
 )
 
-number_of_warehouses = len(warehouses)
 
-if number_of_warehouses > len(neighborhoods):
+# =========================================================
+# DATA SELECTION
+# =========================================================
 
-    st.error(
-        "Number of warehouses cannot exceed number of neighborhoods."
+if mode == "Demo Mode":
+
+    neighborhoods = demo_neighborhoods.copy()
+    warehouses = demo_warehouses.copy()
+
+    st.sidebar.success(
+        "Demo dataset loaded: 25 Bengaluru neighborhoods"
     )
 
 else:
 
-    if st.button(
-        "🚀 Run Warehouse Optimization",
-        type="primary",
-        use_container_width=True
-    ):
+    st.sidebar.info(
+        "Enter neighborhood and warehouse data below."
+    )
 
-        with st.spinner(
-            "Finding optimal warehouse locations..."
+    number_of_neighborhoods = st.sidebar.number_input(
+        "Number of Neighborhoods",
+        min_value=2,
+        max_value=50,
+        value=5,
+        step=1
+    )
+
+    neighborhood_rows = []
+
+    for i in range(number_of_neighborhoods):
+
+        with st.expander(
+            f"Neighborhood {i + 1}"
         ):
 
-            # Current arrangement
-            current_assignments, current_distance = (
-                calculate_assignments(
-                    neighborhoods,
-                    warehouses
-                )
+            name = st.text_input(
+                "Neighborhood Name",
+                value=f"Neighborhood {i + 1}",
+                key=f"name_{i}"
             )
 
-            # Optimized arrangement
-            best_indices, optimized_distance = (
+            latitude = st.number_input(
+                "Latitude",
+                value=12.9716,
+                format="%.6f",
+                key=f"lat_{i}"
+            )
+
+            longitude = st.number_input(
+                "Longitude",
+                value=77.5946,
+                format="%.6f",
+                key=f"lon_{i}"
+            )
+
+            orders = st.number_input(
+                "Daily Orders",
+                min_value=1,
+                value=100,
+                step=1,
+                key=f"orders_{i}"
+            )
+
+            neighborhood_rows.append([
+                name,
+                latitude,
+                longitude,
+                orders
+            ])
+
+    neighborhoods = pd.DataFrame(
+        neighborhood_rows,
+        columns=[
+            "Neighborhood",
+            "Latitude",
+            "Longitude",
+            "Daily Orders"
+        ]
+    )
+
+    number_of_initial_warehouses = st.sidebar.number_input(
+        "Number of Existing Warehouses",
+        min_value=1,
+        max_value=10,
+        value=2,
+        step=1
+    )
+
+    warehouse_rows = []
+
+    for i in range(number_of_initial_warehouses):
+
+        with st.expander(
+            f"Existing Warehouse {i + 1}"
+        ):
+
+            name = st.text_input(
+                "Warehouse Name",
+                value=f"Warehouse {i + 1}",
+                key=f"warehouse_name_{i}"
+            )
+
+            latitude = st.number_input(
+                "Latitude",
+                value=12.9716,
+                format="%.6f",
+                key=f"warehouse_lat_{i}"
+            )
+
+            longitude = st.number_input(
+                "Longitude",
+                value=77.5946,
+                format="%.6f",
+                key=f"warehouse_lon_{i}"
+            )
+
+            warehouse_rows.append([
+                name,
+                latitude,
+                longitude
+            ])
+
+    warehouses = pd.DataFrame(
+        warehouse_rows,
+        columns=[
+            "Warehouse",
+            "Latitude",
+            "Longitude"
+        ]
+    )
+
+
+# =========================================================
+# SUMMARY
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">📊 Network Overview</div>',
+    unsafe_allow_html=True
+)
+
+total_orders = int(
+    neighborhoods["Daily Orders"].sum()
+)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown(
+        f"""
+        <div class="metric-card">
+            <div class="metric-label">Neighborhoods</div>
+            <div class="metric-value">
+                {len(neighborhoods)}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col2:
+    st.markdown(
+        f"""
+        <div class="metric-card">
+            <div class="metric-label">Existing Warehouses</div>
+            <div class="metric-value">
+                {len(warehouses)}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col3:
+    st.markdown(
+        f"""
+        <div class="metric-card">
+            <div class="metric-label">Total Daily Orders</div>
+            <div class="metric-value">
+                {total_orders:,}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
+# NEIGHBORHOOD DATA
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">🏘️ Neighborhood Demand</div>',
+    unsafe_allow_html=True
+)
+
+display_neighborhoods = neighborhoods.copy()
+
+display_neighborhoods["Demand Level"] = display_neighborhoods[
+    "Daily Orders"
+].apply(
+    lambda x:
+        "High" if x >= 120
+        else "Moderate" if x >= 80
+        else "Low"
+)
+
+st.dataframe(
+    display_neighborhoods,
+    use_container_width=True,
+    hide_index=True
+)
+
+
+# =========================================================
+# WAREHOUSE DATA
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">🏭 Existing Warehouses</div>',
+    unsafe_allow_html=True
+)
+
+st.dataframe(
+    warehouses,
+    use_container_width=True,
+    hide_index=True
+)
+
+
+# =========================================================
+# CURRENT ASSIGNMENTS
+# =========================================================
+
+current_assignments = []
+
+current_total_distance = 0.0
+
+for _, neighborhood in neighborhoods.iterrows():
+
+    distances = []
+
+    for _, warehouse in warehouses.iterrows():
+
+        distance = calculate_distance(
+            neighborhood["Latitude"],
+            neighborhood["Longitude"],
+            warehouse["Latitude"],
+            warehouse["Longitude"]
+        )
+
+        distances.append(
+            (distance, warehouse["Warehouse"])
+        )
+
+    nearest_distance, nearest_warehouse = min(
+        distances,
+        key=lambda x: x[0]
+    )
+
+    weighted_distance = (
+        nearest_distance
+        * neighborhood["Daily Orders"]
+    )
+
+    current_total_distance += weighted_distance
+
+    current_assignments.append([
+        neighborhood["Neighborhood"],
+        nearest_warehouse,
+        nearest_distance,
+        neighborhood["Daily Orders"],
+        weighted_distance
+    ])
+
+
+current_df = pd.DataFrame(
+    current_assignments,
+    columns=[
+        "Neighborhood",
+        "Assigned Warehouse",
+        "Distance (km)",
+        "Daily Orders",
+        "Weighted Distance"
+    ]
+)
+
+
+# =========================================================
+# OPTIMIZATION CONTROL
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">🚀 Warehouse Optimization</div>',
+    unsafe_allow_html=True
+)
+
+max_warehouses = len(neighborhoods)
+
+default_warehouses = min(
+    3,
+    max_warehouses
+)
+
+number_of_warehouses = st.slider(
+    "Select number of optimized warehouses",
+    min_value=1,
+    max_value=max_warehouses,
+    value=default_warehouses
+)
+
+st.markdown(
+    """
+    <div class="info-box">
+        <strong>Optimization objective:</strong>
+        Find warehouse locations that minimize total
+        order-weighted delivery distance.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+if st.button(
+    "🔍 Optimize Warehouse Locations",
+    use_container_width=True
+):
+
+    if number_of_warehouses > len(neighborhoods):
+
+        st.error(
+            "Number of warehouses cannot exceed "
+            "the number of neighborhoods."
+        )
+
+    else:
+
+        with st.spinner(
+            "Calculating optimal warehouse locations..."
+        ):
+
+            best_combination, optimized_distance = (
                 optimize_warehouses(
                     neighborhoods,
                     number_of_warehouses
                 )
             )
 
-            optimized_warehouses = (
-                neighborhoods.iloc[
-                    list(best_indices)
-                ].copy()
-            )
-
-            optimized_warehouses["Warehouse"] = (
-                optimized_warehouses["Neighborhood"]
-                + " Warehouse"
-            )
-
-            optimized_assignments, _ = (
-                calculate_assignments(
-                    neighborhoods,
-                    optimized_warehouses[
-                        [
-                            "Warehouse",
-                            "Latitude",
-                            "Longitude"
-                        ]
-                    ]
-                )
-            )
-
-            reduction = (
-                current_distance
-                - optimized_distance
-            )
-
-            percentage_reduction = (
-                reduction / current_distance * 100
-                if current_distance != 0
-                else 0
-            )
-
-        # Save results
-        st.session_state["optimized"] = True
-
-        st.session_state["current_distance"] = (
-            current_distance
+        st.session_state["best_combination"] = (
+            best_combination
         )
 
         st.session_state["optimized_distance"] = (
             optimized_distance
         )
 
-        st.session_state["reduction"] = (
-            reduction
-        )
-
-        st.session_state["percentage_reduction"] = (
-            percentage_reduction
-        )
-
-        st.session_state["optimized_warehouses"] = (
-            optimized_warehouses
-        )
-
-        st.session_state["optimized_assignments"] = (
-            optimized_assignments
-        )
+        st.session_state["optimized_ready"] = True
 
 
 # =========================================================
 # RESULTS
 # =========================================================
 
-if st.session_state.get("optimized", False):
+if st.session_state.get(
+    "optimized_ready",
+    False
+):
 
-    current_distance = st.session_state[
-        "current_distance"
+    best_combination = st.session_state[
+        "best_combination"
     ]
 
     optimized_distance = st.session_state[
         "optimized_distance"
     ]
 
-    reduction = st.session_state[
-        "reduction"
-    ]
+    distance_reduction = (
+        current_total_distance
+        - optimized_distance
+    )
 
-    percentage_reduction = st.session_state[
-        "percentage_reduction"
-    ]
+    if current_total_distance > 0:
 
-    optimized_warehouses = st.session_state[
-        "optimized_warehouses"
-    ]
+        percentage_reduction = (
+            distance_reduction
+            / current_total_distance
+        ) * 100
 
-    optimized_assignments = st.session_state[
-        "optimized_assignments"
-    ]
-
-
-    # =====================================================
-    # METRICS
-    # =====================================================
+    else:
+        percentage_reduction = 0
 
     st.markdown(
         '<div class="section-title">📈 Optimization Results</div>',
@@ -713,11 +917,14 @@ if st.session_state.get("optimized", False):
         st.markdown(
             f"""
             <div class="metric-card">
+                <div class="metric-label">
+                    Current Distance
+                </div>
                 <div class="metric-value">
-                    {current_distance:,.2f}
+                    {current_total_distance:,.2f}
                 </div>
                 <div class="metric-label">
-                    Current Distance (order-km)
+                    order-km
                 </div>
             </div>
             """,
@@ -729,11 +936,14 @@ if st.session_state.get("optimized", False):
         st.markdown(
             f"""
             <div class="metric-card">
+                <div class="metric-label">
+                    Optimized Distance
+                </div>
                 <div class="metric-value">
                     {optimized_distance:,.2f}
                 </div>
                 <div class="metric-label">
-                    Optimized Distance (order-km)
+                    order-km
                 </div>
             </div>
             """,
@@ -745,11 +955,14 @@ if st.session_state.get("optimized", False):
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-value">
-                    {reduction:,.2f}
-                </div>
                 <div class="metric-label">
                     Distance Reduction
+                </div>
+                <div class="metric-value metric-highlight">
+                    {distance_reduction:,.2f}
+                </div>
+                <div class="metric-label">
+                    order-km
                 </div>
             </div>
             """,
@@ -761,11 +974,11 @@ if st.session_state.get("optimized", False):
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="metric-value">
-                    {percentage_reduction:.2f}%
-                </div>
                 <div class="metric-label">
-                    Improvement
+                    Percentage Reduction
+                </div>
+                <div class="metric-value metric-highlight">
+                    {percentage_reduction:.2f}%
                 </div>
             </div>
             """,
@@ -778,54 +991,93 @@ if st.session_state.get("optimized", False):
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">🏭 Recommended Warehouse Locations</div>',
+        '<div class="section-title">📍 Recommended Warehouse Locations</div>',
         unsafe_allow_html=True
     )
 
-    warehouse_columns = st.columns(
-        len(optimized_warehouses)
-    )
+    optimized_warehouses = []
 
-    for i, (_, warehouse) in enumerate(
-        optimized_warehouses.iterrows()
-    ):
+    for index in best_combination:
 
-        with warehouse_columns[i]:
+        warehouse = neighborhoods.iloc[index]
 
-            st.markdown(
-                f"""
-                <div class="warehouse-card">
-                    <h4>🟢 {warehouse["Warehouse"]}</h4>
-                    <b>Location:</b> {warehouse["Neighborhood"]}<br>
-                    <b>Latitude:</b> {warehouse["Latitude"]:.6f}<br>
-                    <b>Longitude:</b> {warehouse["Longitude"]:.6f}
+        optimized_warehouses.append([
+            warehouse["Neighborhood"],
+            warehouse["Latitude"],
+            warehouse["Longitude"]
+        ])
+
+        st.markdown(
+            f"""
+            <div class="warehouse-card">
+                <div class="warehouse-title">
+                    🟢 {warehouse["Neighborhood"]}
                 </div>
-                """,
-                unsafe_allow_html=True
+                <div class="warehouse-text">
+                    Latitude: {warehouse["Latitude"]:.6f}
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Longitude: {warehouse["Longitude"]:.6f}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    # =====================================================
+    # OPTIMIZED ASSIGNMENTS
+    # =====================================================
+
+    optimized_assignments = []
+
+    for _, neighborhood in neighborhoods.iterrows():
+
+        best_warehouse = None
+        best_distance = float("inf")
+
+        for index in best_combination:
+
+            warehouse = neighborhoods.iloc[index]
+
+            distance = calculate_distance(
+                neighborhood["Latitude"],
+                neighborhood["Longitude"],
+                warehouse["Latitude"],
+                warehouse["Longitude"]
             )
 
+            if distance < best_distance:
 
-    # =====================================================
-    # ASSIGNMENTS
-    # =====================================================
+                best_distance = distance
+                best_warehouse = warehouse["Neighborhood"]
+
+        optimized_assignments.append([
+            neighborhood["Neighborhood"],
+            best_warehouse,
+            best_distance,
+            neighborhood["Daily Orders"],
+            best_distance * neighborhood["Daily Orders"]
+        ])
+
+
+    optimized_df = pd.DataFrame(
+        optimized_assignments,
+        columns=[
+            "Neighborhood",
+            "Optimized Warehouse",
+            "Distance (km)",
+            "Daily Orders",
+            "Weighted Distance"
+        ]
+    )
 
     st.markdown(
-        '<div class="section-title">📦 Neighborhood Assignments</div>',
+        '<div class="section-title">🔗 Optimized Assignments</div>',
         unsafe_allow_html=True
-    )
-
-    display_assignments = optimized_assignments.copy()
-
-    display_assignments["Distance (km)"] = (
-        display_assignments["Distance (km)"].round(2)
-    )
-
-    display_assignments["Weighted Distance"] = (
-        display_assignments["Weighted Distance"].round(2)
     )
 
     st.dataframe(
-        display_assignments,
+        optimized_df,
         use_container_width=True,
         hide_index=True
     )
@@ -836,74 +1088,60 @@ if st.session_state.get("optimized", False):
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">🗺️ Demand & Warehouse Map</div>',
+        '<div class="section-title">🗺️ Optimized Network Map</div>',
         unsafe_allow_html=True
     )
 
-    map_neighborhoods = neighborhoods.copy()
+    map_data = []
 
+    for _, row in neighborhoods.iterrows():
 
-    def demand_category(orders):
-
-        if orders >= 120:
-            return "High"
-
-        elif orders >= 80:
-            return "Moderate"
-
-        return "Low"
-
-
-    def demand_color(orders):
+        orders = row["Daily Orders"]
 
         if orders >= 120:
-            return [220, 38, 38]
+
+            color = [220, 38, 38]
+            demand_level = "High"
 
         elif orders >= 80:
-            return [234, 179, 8]
 
-        return [107, 114, 128]
+            color = [234, 179, 8]
+            demand_level = "Moderate"
 
+        else:
 
-    map_neighborhoods["Demand"] = (
-        map_neighborhoods["Daily Orders"]
-        .apply(demand_category)
-    )
+            color = [107, 114, 128]
+            demand_level = "Low"
 
-    map_neighborhoods["Color"] = (
-        map_neighborhoods["Daily Orders"]
-        .apply(demand_color)
-    )
-
-    map_neighborhoods["Radius"] = (
-        400
-        + map_neighborhoods["Daily Orders"] * 4
-    )
-
-
-    map_warehouses = optimized_warehouses[
-        [
-            "Warehouse",
-            "Latitude",
-            "Longitude"
-        ]
-    ].copy()
-
-    map_warehouses["Color"] = [
-        [34, 197, 94]
-        for _ in range(len(map_warehouses))
-    ]
-
-    map_warehouses["Radius"] = 900
+        map_data.append({
+            "Name": row["Neighborhood"],
+            "Latitude": row["Latitude"],
+            "Longitude": row["Longitude"],
+            "Daily Orders": int(orders),
+            "Demand Level": demand_level,
+            "Color": color,
+            "Radius": 400 + (orders * 4)
+        })
 
 
-    # =====================================================
-    # MAP LAYERS
-    # =====================================================
+    warehouse_map_data = []
+
+    for index in best_combination:
+
+        row = neighborhoods.iloc[index]
+
+        warehouse_map_data.append({
+            "Warehouse": f"Optimized Warehouse — {row['Neighborhood']}",
+            "Latitude": row["Latitude"],
+            "Longitude": row["Longitude"],
+            "Color": [34, 197, 94],
+            "Radius": 1000
+        })
+
 
     neighborhood_layer = pdk.Layer(
         "ScatterplotLayer",
-        data=map_neighborhoods,
+        data=map_data,
         get_position="[Longitude, Latitude]",
         get_fill_color="Color",
         get_radius="Radius",
@@ -917,7 +1155,7 @@ if st.session_state.get("optimized", False):
 
     warehouse_layer = pdk.Layer(
         "ScatterplotLayer",
-        data=map_warehouses,
+        data=warehouse_map_data,
         get_position="[Longitude, Latitude]",
         get_fill_color="Color",
         get_radius="Radius",
@@ -925,13 +1163,9 @@ if st.session_state.get("optimized", False):
         opacity=1,
         stroked=True,
         get_line_color=[255, 255, 255],
-        line_width_min_pixels=2
+        line_width_min_pixels=3
     )
 
-
-    # =====================================================
-    # MAP VIEW
-    # =====================================================
 
     view_state = pdk.ViewState(
         latitude=12.9716,
@@ -943,92 +1177,145 @@ if st.session_state.get("optimized", False):
 
     tooltip = {
         "html": """
-        <b>{Neighborhood}</b><br/>
+        <b>{Name}</b><br/>
         Daily Orders: {Daily Orders}<br/>
-        Demand: {Demand}
+        Demand: {Demand Level}
         """,
         "style": {
-            "backgroundColor": "steelblue",
+            "backgroundColor": "#111827",
             "color": "white"
         }
     }
 
 
-    deck = pdk.Deck(
-        layers=[
-            neighborhood_layer,
-            warehouse_layer
-        ],
+    warehouse_tooltip = {
+        "html": """
+        <b>{Warehouse}</b>
+        """,
+        "style": {
+            "backgroundColor": "#14532d",
+            "color": "white"
+        }
+    }
+
+
+    neighborhood_deck = pdk.Deck(
+        layers=[neighborhood_layer],
         initial_view_state=view_state,
         tooltip=tooltip,
         map_style=None
     )
 
+
+    warehouse_deck = pdk.Deck(
+        layers=[warehouse_layer],
+        initial_view_state=view_state,
+        tooltip=warehouse_tooltip,
+        map_style=None
+    )
+
+
     st.pydeck_chart(
-        deck,
+        pdk.Deck(
+            layers=[
+                neighborhood_layer,
+                warehouse_layer
+            ],
+            initial_view_state=view_state,
+            tooltip=tooltip,
+            map_style=None
+        ),
         use_container_width=True
     )
 
 
     # =====================================================
-    # LEGEND
+    # MAP LEGEND
     # =====================================================
 
     st.markdown(
         """
-        **Map Legend**
+        <div class="info-box">
 
-        🔴 **High Demand** — 120+ orders/day &nbsp;&nbsp;&nbsp;
-        🟡 **Moderate Demand** — 80–119 orders/day &nbsp;&nbsp;&nbsp;
-        ⚪ **Low Demand** — below 80 orders/day &nbsp;&nbsp;&nbsp;
-        🟢 **Optimized Warehouse**
-        """
+        <strong>Map Legend</strong><br><br>
+
+        🔴 <b>High Demand</b> — 120+ daily orders
+        &nbsp;&nbsp;&nbsp;
+
+        🟡 <b>Moderate Demand</b> — 80–119 daily orders
+        &nbsp;&nbsp;&nbsp;
+
+        ⚪ <b>Low Demand</b> — below 80 daily orders
+        &nbsp;&nbsp;&nbsp;
+
+        🟢 <b>Optimized Warehouse</b>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 
-    # =====================================================
-    # METHODOLOGY
-    # =====================================================
+# =========================================================
+# ALGORITHM EXPLANATION
+# =========================================================
 
-    with st.expander("🧠 How GridPoint Optimizes Warehouses"):
+st.markdown(
+    '<div class="section-title">🧠 How OptiGrid Works</div>',
+    unsafe_allow_html=True
+)
 
-        st.markdown("""
-        GridPoint uses a **K-Median-style optimization approach**.
+st.markdown(
+    """
+    <div class="info-box">
 
-        **1. Candidate locations**
+    <b>1. Geographic Distance</b><br>
+    OptiGrid calculates distances between neighborhoods
+    using the Haversine formula.
 
-        Existing neighborhoods are treated as candidate warehouse
-        locations.
+    <br><br>
 
-        **2. Distance calculation**
+    <b>2. Demand Weighting</b><br>
+    Each distance is multiplied by the neighborhood's
+    daily order volume, giving higher-demand areas
+    greater importance.
 
-        The Haversine formula calculates geographic distance between
-        neighborhoods.
+    <br><br>
 
-        **3. Demand weighting**
+    <b>3. Warehouse Selection</b><br>
+    Neighborhoods are treated as candidate warehouse
+    locations. OptiGrid evaluates possible combinations
+    of warehouse locations.
 
-        Delivery distance is multiplied by daily order volume.
+    <br><br>
 
-        **4. Optimization**
+    <b>4. Assignment</b><br>
+    Every neighborhood is assigned to its nearest
+    selected warehouse.
 
-        GridPoint evaluates possible warehouse combinations and
-        minimizes:
+    <br><br>
 
-        **Total Cost = Σ (Distance × Daily Orders)**
+    <b>5. Optimization Objective</b><br>
+    The combination with the lowest total
+    order-weighted delivery distance is selected.
 
-        **5. Assignment**
-
-        Each neighborhood is assigned to its nearest optimized
-        warehouse.
-
-        The optimization precomputes geographic distances once,
-        making the search substantially faster.
-        """)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
-else:
+# =========================================================
+# FOOTER
+# =========================================================
 
-    st.info(
-        "Enter or review your data, then click "
-        "**Run Warehouse Optimization** to generate results."
-    )
+st.markdown("---")
+
+st.markdown(
+    """
+    <div style="text-align:center; color:#64748b;">
+        <b>OptiGrid</b> · Warehouse Location Optimization Platform
+    </div>
+    """,
+    unsafe_allow_html=True
+)
